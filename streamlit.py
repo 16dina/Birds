@@ -12,6 +12,27 @@ from PIL import Image
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from tensorflow.keras.utils import image_dataset_from_directory
 
+# Define a custom optimizer class
+class CustomAdam(tf.keras.optimizers.Optimizer):
+    def __init__(self, learning_rate=0.001, **kwargs):
+        super(CustomAdam, self).__init__(**kwargs)
+        self.learning_rate = learning_rate
+
+    def get_config(self):
+        config = super(CustomAdam, self).get_config()
+        config.update({'learning_rate': self.learning_rate})
+        return config
+
+    def _create_slots(self, var_list):
+        # Implement slot creation logic here, if needed
+        pass
+
+    def _resource_apply(self, grad, var, indices=None):
+        # Implement resource apply logic here
+        new_var = var - self.learning_rate * grad
+        return tf.raw_ops.AssignVariableOp(ref=var, value=new_var)
+
+custom_optimizer = CustomAdam(learning_rate=0.001)
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
@@ -25,7 +46,7 @@ st.markdown("<p style='text-align: center;'>✨Welcome to my awesome DL task whe
 
 # Load the saved model
 model_checkpoint_path = './model_checkpoint_v2.h5'  # Replace with your checkpoint path
-model_new = tf.keras.models.load_model(model_checkpoint_path)
+model_new = tf.keras.models.load_model(model_checkpoint_path, custom_objects={'Adam': custom_optimizer})
 
 # Constants
 NUM_CLASSES = 10
