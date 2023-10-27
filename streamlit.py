@@ -24,7 +24,7 @@ st.markdown("<h1 style='text-align: center;'>Bird Type Image Classification</h1>
 st.markdown("<p style='text-align: center;'>✨Welcome to my awesome DL task where I make a CNN network to classify types of birds! :)🐦</p>", unsafe_allow_html=True)
 
 # Load the saved model
-model_checkpoint_path = 'model_checkpoint_v2.tf/saved_model.pb'  # Replace with your checkpoint path
+model_checkpoint_path = './model_checkpoint_v2.tf'  # Replace with your checkpoint path
 model_new = tf.keras.models.load_model(model_checkpoint_path)
 
 # Constants
