@@ -41,19 +41,13 @@ st.set_page_config(
     page_icon=":bird:",
 )
 
-
-st.markdown("<h1 style='text-align: center;'>Bird Type Image Classification</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>✨Welcome to my awesome DL task where I make a CNN network to classify types of birds! :)🐦</p>", unsafe_allow_html=True)
-
 # Load the saved model
-model_checkpoint_path = 'model_checkpoint_v2.h5'  # Replace with your checkpoint path
+model_checkpoint_path = './model_checkpoint_v2.h5'  # Replace with your checkpoint path
 model_new = tf.keras.models.load_model(model_checkpoint_path, custom_objects={'CustomAdam': CustomAdam})
 
 # Constants
 NUM_CLASSES = 10
 IMG_SIZE = 64
-HEIGTH_FACTOR = 0.2
-WIDTH_FACTOR = 0.2
 batch_size = 32
 image_size = (64, 64)
 validation_split = 0.2
@@ -129,111 +123,30 @@ st.sidebar.title('Training Parameters')
 num_epochs = st.sidebar.slider('Number of Epochs', min_value=1, max_value=50, value=10)
 learning_rate = st.sidebar.number_input('Learning Rate', min_value=0.001, max_value=1.0, value=0.001, step=0.001, format="%.3f")
 use_dropout = st.sidebar.checkbox('Use Dropout')
-# Create the training dataset from the 'train' directory
-    
-train_ds = image_dataset_from_directory(
-    directory='dataset/train',
-    labels='inferred',
-    label_mode='categorical',
-    batch_size=batch_size,
-    image_size=image_size,
-    validation_split=validation_split,
-    subset='training',
-    seed=123
-)
 
-    # Create the validation dataset from the 'train' directory
-validation_ds = image_dataset_from_directory(
-    directory='dataset/train',
-    labels='inferred',
-    label_mode='categorical',
-    batch_size=batch_size,
-    image_size=image_size,
-    validation_split=validation_split,
-    subset='validation',
-    seed=123
-)
-
-# Define a function to build and train the model
-def build_and_train_model(num_epochs, learning_rate, use_dropout):
-    # Create a callback to save the best model during training
-    model_checkpoint_callback = ModelCheckpoint(
-        filepath='model_checkpoint.h5',
-        save_best_only=True,
-        monitor='val_loss',
-        mode='min',
-        verbose=1
-    )
-
-    # Compile and train your model as usual
-    optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-    model_new.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
-
-    if use_dropout:
-        model_new.add(Dropout(0.5))  # You can adjust the dropout rate as needed
-    
-    history2 = model_new.fit(train_ds,
-                            validation_data=validation_ds,
-                            epochs=num_epochs,
-                            callbacks=[model_checkpoint_callback],  # Add the callback here
-                            verbose=1  # Set verbosity as desired
-                            )
-
-    return history2
-
-training_complete = False
-
-# Add a button to start training
-if st.sidebar.button('Start Training'):
-    st.text('Training in progress...')
-    history = build_and_train_model(num_epochs, learning_rate, use_dropout)
-    st.text('Training completed.')
-
-    # Plot the loss and accuracy curves
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-    ax1.plot(history.history['loss'], label='training loss')
-    ax1.plot(history.history['val_loss'], label='validation loss')
-    ax1.set_title('Loss curves')
-    ax1.set_xlabel('Epoch')
-    ax1.set_ylabel('Loss')
-    ax1.legend()
-
-    ax2.plot(history.history['accuracy'], label='training accuracy')
-    ax2.plot(history.history['val_accuracy'], label='validation accuracy')
-    ax2.set_title('Accuracy curves')
-    ax2.set_xlabel('Epoch')
-    ax2.set_ylabel('Accuracy')
-    ax2.legend()
-
-    fig.tight_layout()
-    st.pyplot(fig)
-    training_complete = True
+# Assuming you've trained your 'model_new' using the training and validation datasets
 
 # Model Evaluation Section
 st.header('Model Evaluation')
 
-if training_complete:  # Check if the model is defined in the local scope
-    # Load and display the confusion matrix
-    # Assuming you've trained your 'model_new' using the training and validation datasets
-    true_labels = []
-    predicted_labels = []
+# Load and display the confusion matrix
+true_labels = []
+predicted_labels = []
 
-    # Iterate through the validation dataset and make predictions
-    for batch in validation_ds:
-        images, labels = batch
-        true_labels.extend(np.argmax(labels, axis=1))  # Convert one-hot encoded labels to integers
-        predictions = model_new.predict(images)
-        predicted_labels.extend(np.argmax(predictions, axis=1))
+# Iterate through the validation dataset and make predictions
+for batch in validation_ds:
+    images, labels = batch
+    true_labels.extend(np.argmax(labels, axis=1))  # Convert one-hot encoded labels to integers
+    predictions = model_new.predict(images)
+    predicted_labels.extend(np.argmax(predictions, axis=1))
 
-    # Compute the confusion matrix
-    conf_matrix = confusion_matrix(true_labels, predicted_labels)
+# Compute the confusion matrix
+conf_matrix = confusion_matrix(true_labels, predicted_labels)
 
-    fig, ax = plt.subplots()
+fig, ax = plt.subplots()
 
-    # Display the confusion matrix using the Streamlit `st.pyplot()` function
-    labels = list(range(NUM_CLASSES))  # Assuming your classes are numbered from 0 to NUM_CLASSES-1
-    display = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=labels)
-    display.plot(cmap='viridis', values_format='d', ax=ax)
-    st.pyplot(fig)
-else:
-    st.write('Train the model to see evaluation results.')
+# Display the confusion matrix using the Streamlit `st.pyplot()` function
+labels = list(range(NUM_CLASSES))  # Assuming your classes are numbered from 0 to NUM_CLASSES-1
+display = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=labels)
+display.plot(cmap='viridis', values_format='d', ax=ax)
+st.pyplot(fig)
