@@ -15,8 +15,7 @@ from tensorflow.keras.utils import image_dataset_from_directory
 # Define a custom optimizer class
 class CustomAdam(tf.keras.optimizers.Optimizer):
     def __init__(self, learning_rate=0.001, **kwargs):
-        super(CustomAdam, self).__init__(**kwargs)
-        self.learning_rate = learning_rate
+        super(CustomAdam, self).__init__(learning_rate=learning_rate, **kwargs)
 
     def get_config(self):
         config = super(CustomAdam, self).get_config()
