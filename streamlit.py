@@ -12,6 +12,7 @@ from PIL import Image
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from tensorflow.keras.utils import image_dataset_from_directory
 
+<<<<<<< HEAD
 # Define a custom optimizer class
 class CustomAdam(tf.keras.optimizers.Optimizer):
     def __init__(self, learning_rate=0.001, **kwargs):
@@ -33,6 +34,9 @@ class CustomAdam(tf.keras.optimizers.Optimizer):
         return tf.raw_ops.AssignVariableOp(ref=var, value=new_var)
 
 custom_optimizer = CustomAdam(learning_rate=0.001)
+=======
+custom_optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)  # Replace with your actual optimizer configuration
+>>>>>>> 8bd4b8d801340af7a77b9b73fd7644c8ef74e514
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
