@@ -47,7 +47,7 @@ st.markdown("<p style='text-align: center;'>✨Welcome to my awesome DL task whe
 
 # Load the saved model
 model_checkpoint_path = './model_checkpoint_v2.h5'  # Replace with your checkpoint path
-model_new = tf.keras.models.load_model(model_checkpoint_path, custom_objects={'Adam': custom_optimizer})
+model_new = tf.keras.models.load_model(model_checkpoint_path, custom_objects={'CustomAdam': CustomAdam})
 
 # Constants
 NUM_CLASSES = 10
