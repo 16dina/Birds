@@ -12,6 +12,7 @@ from PIL import Image
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from tensorflow.keras.utils import image_dataset_from_directory
 
+custom_optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)  # Replace with your actual optimizer configuration
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
@@ -25,7 +26,7 @@ st.markdown("<p style='text-align: center;'>✨Welcome to my awesome DL task whe
 
 # Load the saved model
 model_checkpoint_path = './model_checkpoint_v2.h5'  # Replace with your checkpoint path
-model_new = tf.keras.models.load_model(model_checkpoint_path)
+model_new = tf.keras.models.load_model(model_checkpoint_path, custom_objects={'Adam': custom_optimizer})
 
 # Constants
 NUM_CLASSES = 10
