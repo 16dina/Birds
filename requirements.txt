@@ -1,0 +1,6 @@
+streamlit==0.89.0
+tensorflow==2.7.0
+matplotlib==3.5.1
+Pillow==9.0.1
+scikit-learn==1.0.2
+split-folders==0.4.3
