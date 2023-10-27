@@ -43,7 +43,7 @@ st.set_page_config(
 
 # Load the saved model
 model_checkpoint_path = './model_checkpoint_v2.h5'  # Replace with your checkpoint path
-model_new = tf.keras.models.load_model(model_checkpoint_path, custom_objects={'CustomAdam': CustomAdam})
+model_new = tf.keras.models.load_model(model_checkpoint_path)
 
 # Constants
 NUM_CLASSES = 10
